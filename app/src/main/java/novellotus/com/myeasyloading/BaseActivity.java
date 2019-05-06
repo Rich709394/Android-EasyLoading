@@ -14,7 +14,6 @@ import com.novellotus.easyloading.EasyReloadInterface;
  */
 public abstract class BaseActivity extends AppCompatActivity implements EasyReloadInterface {
 
-    public EasyLoading easyLoading;
     public EasyLoadingView loadingView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,7 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyRelo
      * 初始化加载布局
      */
     public void initLoading() {
-        easyLoading = new EasyLoading();
+        EasyLoading  easyLoading = new EasyLoading();
         loadingView = easyLoading.build(this);
         loadingView.setBackgroundResource(R.color.colorPrimaryDark);
         easyLoading.addLoadingView((ViewGroup) ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0), 0);
@@ -34,5 +33,9 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyRelo
     }
 
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loadingView=null;
+    }
 }
