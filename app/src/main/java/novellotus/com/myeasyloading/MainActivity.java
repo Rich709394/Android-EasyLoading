@@ -6,7 +6,8 @@ import android.view.View;
 
 public class MainActivity extends BaseActivity implements MyHandler.HandlerInterface{
 
-    MyHandler myHandler;
+    private MyHandler myHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +21,7 @@ public class MainActivity extends BaseActivity implements MyHandler.HandlerInter
      */
     public void load(View view){
         loadingView.loading("拼命加载中,请稍等");
+        loadingView.initLoadingIcon(R.mipmap.ic_launcher);
         myHandler=new MyHandler(this,this);
         Message message=new Message();
         message.what=2;
@@ -40,7 +42,6 @@ public class MainActivity extends BaseActivity implements MyHandler.HandlerInter
 
     @Override
     public void reload() {
-
         switch (loadingView.getLoadingState()){
             case LOADING:
                 break;
@@ -55,7 +56,5 @@ public class MainActivity extends BaseActivity implements MyHandler.HandlerInter
                 myHandler.sendMessageDelayed(message,3000);
                 break;
         }
-
-
     }
 }

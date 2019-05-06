@@ -32,13 +32,19 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
     private AnimationDrawable animationDrawable;
     //加载状态
     private Status status;
+    //加载中图片
+    private int iconLoading;
+    //加载失败图片
+    private int iconLoadingFail;
 
     public LoadingView(Context context) {
         super(context);
-        status=Status.LOADING;
-        initTipsString();
-        initLoadingIcon();
-        initReLoadButton();
+        status = Status.LOADING;
+        iconLoading = R.drawable.anim_loading;
+        iconLoadingFail = R.drawable.icon_fail;
+        addTipsTextView();
+        addLoadingImageView();
+        addReLoadButton();
         setVisibility(View.GONE);
     }
 
@@ -57,15 +63,17 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      * 加载中状态
      */
     public void loading(String... args) {
-        status=Status.LOADING;
+        status = Status.LOADING;
         setVisibility(View.VISIBLE);
         String tips = args.length == 0 ? "数据加载中，请稍后" : args[0];
-        img_tips.setImageResource(R.drawable.anim_loading);
-        animationDrawable = (AnimationDrawable) img_tips.getDrawable();
-        animationDrawable.start();
+        img_tips.setImageResource(iconLoading);
+        if(img_tips.getDrawable() instanceof AnimationDrawable){
+            animationDrawable = (AnimationDrawable) img_tips.getDrawable();
+            animationDrawable.start();
+        }
+
         tv_tips.setText(tips);
         btn_reload.setVisibility(View.INVISIBLE);
-        animationDrawable.start();
     }
 
     /**
@@ -73,7 +81,7 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      */
     @Override
     public void loadEmpty(String... args) {
-        status=Status.EMPTY;
+        status = Status.EMPTY;
         String tips = args.length == 0 ? "当前没有数据" : args[0];
         tv_tips.setText(tips);
         img_tips.setImageResource(R.drawable.icon_fail);
@@ -85,7 +93,7 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      */
     @Override
     public void loadSuccess() {
-        status=Status.SUCCESS;
+        status = Status.SUCCESS;
         setVisibility(View.GONE);
     }
 
@@ -94,13 +102,14 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      */
     @Override
     public void loadFail(boolean reload, String... args) {
-        status=Status.FAIL;
-        animationDrawable.stop();
-        img_tips.setImageResource(R.drawable.icon_fail);
+        status = Status.FAIL;
+        if (animationDrawable != null)
+            animationDrawable.stop();
+        img_tips.setImageResource(iconLoadingFail);
         tv_tips.setText(args[0]);
         if (reload) {
             btn_reload.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             btn_reload.setVisibility(View.INVISIBLE);
 
         }
@@ -116,11 +125,9 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
         }
     }
 
-
-
     /**
      * 拦截点击事件,防止下层被覆盖的布局响应事件
-     * */
+     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -128,14 +135,23 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
     }
 
 
-
     /**
      * 设置提示图片,位于文字上方
      */
     @Override
-    public void initLoadingIcon() {
+    public void initLoadingIcon(int resId) {
+        iconLoading = resId;
+    }
+
+    @Override
+    public void initLoadingFailIcon(int resId) {
+        iconLoadingFail = resId;
+    }
+
+    @Override
+    void addLoadingImageView() {
         img_tips = new ImageView(getContext());
-        img_tips.setImageResource(R.drawable.anim_loading);
+        img_tips.setImageResource(iconLoading);
         LayoutParams imgLp = new LayoutParams((int) getContext().getResources().getDimension(R.dimen.tips_img_width), (int) getContext().getResources().getDimension(R.dimen.tips_img_height));
         imgLp.addRule(RelativeLayout.ABOVE, R.id.id_text);
         imgLp.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -148,7 +164,7 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      * 提示文字居中显示
      */
     @Override
-    public void initTipsString() {
+    public void addTipsTextView() {
         float textSize = getContext().getResources().getDimension(R.dimen.tips_tv_text_size);
         tv_tips = new TextView(getContext());
         tv_tips.setText(tipsString);
@@ -164,7 +180,7 @@ public class LoadingView extends EasyLoadingView implements View.OnClickListener
      * 重新加载按钮位于TextView下方
      */
     @Override
-    public void initReLoadButton() {
+    public void addReLoadButton() {
         btn_reload = new Button(getContext());
         btn_reload.setText("重新加载");
         btn_reload.setTextSize(15);

@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
  */
 public class EasyLoading {
 
-
     private EasyLoadingView loadingView;
 
     public EasyLoadingView build(Context context) {
@@ -34,23 +33,6 @@ public class EasyLoading {
         return loadingView;
     }
 
-    /**
-     * 获取状态栏高度,沉浸式布局时需要下移这个高度
-     * */
-    @SuppressLint("PrivateApi")
-    public int getStateBar() {
-        Class c;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            Object obj = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = Integer.parseInt(field.get(obj).toString());
-            return loadingView.getContext().getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 
     /**
      * 动态添加加载布局,将加载布局添加进根布局
@@ -84,6 +66,22 @@ public class EasyLoading {
         }
 
     }
-
+    /**
+     * 获取状态栏高度,沉浸式布局时需要下移这个高度
+     * */
+    @SuppressLint("PrivateApi")
+    public int getStateBar() {
+        Class c;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            Object obj = c.newInstance();
+            Field field = c.getField("status_bar_height");
+            int x = Integer.parseInt(field.get(obj).toString());
+            return loadingView.getContext().getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
 }
