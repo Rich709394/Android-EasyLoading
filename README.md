@@ -39,7 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyRelo
         EasyLoading  easyLoading = new EasyLoading();
         loadingView = easyLoading.build(this);
         loadingView.setBackgroundResource(R.color.colorPrimaryDark);
-        easyLoading.addLoadingView((ViewGroup)           ((ViewGroup)findViewById(android.R.id.content)).getChildAt(0), 0);
+        easyLoading.addLoadingView((ViewGroup)((ViewGroup)findViewById(android.R.id.content)).getChildAt(0), 0);  
         loadingView.setReloadInterface(this);
     }
 
